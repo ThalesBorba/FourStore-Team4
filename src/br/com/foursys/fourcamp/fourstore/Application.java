@@ -4,6 +4,7 @@
 package br.com.foursys.fourcamp.fourstore;
 
 import br.com.foursys.fourcamp.fourstore.communication.MainMenu;
+import br.com.foursys.fourcamp.fourstore.exception.InvalidInputException;
 import br.com.foursys.fourcamp.fourstore.exception.InvalidSellValueException;
 import br.com.foursys.fourcamp.fourstore.exception.ProductNotFoundException;
 import br.com.foursys.fourcamp.fourstore.exception.StockInsufficientException;
@@ -25,10 +26,12 @@ public class Application {
 	 * @throws ProductNotFoundException 
 	 * @throws InvalidSellValueException 
 	 * @throws StockInsufficientException 
+	 * @throws InvalidInputException 
 	 */
-	public static void main(String[] args) throws InvalidSellValueException, ProductNotFoundException, StockInsufficientException {
+	public static void main(String[] args) throws InvalidSellValueException, ProductNotFoundException, StockInsufficientException, 
+		InvalidInputException {
 
-		MainMenu menu = new MainMenu();
+		new MainMenu();
 
 		
 	}

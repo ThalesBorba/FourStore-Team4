@@ -51,7 +51,7 @@ public class StockService {
 	
 	public Product verifyIfExists(String sku) throws ProductNotFoundException {
     	if (productData.findBySku(sku).equals(null)) {
-    		throw new ProductNotFoundException(sku);
+    		throw new ProductNotFoundException();
     	} else {
     		return productData.findBySku(sku);
     	}

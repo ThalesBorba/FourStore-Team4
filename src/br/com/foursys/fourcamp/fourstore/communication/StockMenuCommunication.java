@@ -10,8 +10,11 @@ import br.com.foursys.fourcamp.fourstore.enums.DepartmentEnum;
 import br.com.foursys.fourcamp.fourstore.enums.SeasonEnum;
 import br.com.foursys.fourcamp.fourstore.enums.SizeEnum;
 import br.com.foursys.fourcamp.fourstore.enums.TypeOfMerchandiseEnum;
+import br.com.foursys.fourcamp.fourstore.exception.InvalidInputException;
 import br.com.foursys.fourcamp.fourstore.exception.InvalidSellValueException;
 import br.com.foursys.fourcamp.fourstore.exception.ProductNotFoundException;
+import br.com.foursys.fourcamp.fourstore.model.Product;
+import br.com.foursys.fourcamp.fourstore.utils.RunTime;
 
 public class StockMenuCommunication {
 	static ProductController productController = new ProductController();
@@ -38,7 +41,8 @@ public class StockMenuCommunication {
 
 				validate = true;
 			} catch (Exception e) {
-				System.out.println("Opção inválida");
+				throw new InvalidInputException(1L);
+			} finally {
 				continue;
 			}
 		}
@@ -61,7 +65,8 @@ public class StockMenuCommunication {
 
 				validate = true;
 			} catch (Exception e) {
-				System.out.println("Opção inválida");
+				throw new InvalidInputException(1L);
+			} finally {
 				continue;
 			}
 		}
@@ -84,7 +89,8 @@ public class StockMenuCommunication {
 
 				validate = true;
 			} catch (Exception e) {
-				System.out.println("Opção inválida");
+				throw new InvalidInputException(1L);
+			} finally {
 				continue;
 			}
 		}
@@ -107,7 +113,8 @@ public class StockMenuCommunication {
 
 				validate = true;
 			} catch (Exception e) {
-				System.out.println("Opção inválida");
+				throw new InvalidInputException(1L);
+			} finally {
 				continue;
 			}
 		}
@@ -130,7 +137,8 @@ public class StockMenuCommunication {
 
 				validate = true;
 			} catch (Exception e) {
-				System.out.println("Opção inválida");
+				throw new InvalidInputException(1L);
+			} finally {
 				continue;
 			}
 		}
@@ -153,7 +161,8 @@ public class StockMenuCommunication {
 
 				validate = true;
 			} catch (Exception e) {
-				System.out.println("Opção inválida");
+				throw new InvalidInputException(1L);
+			} finally {
 				continue;
 			}
 		}
@@ -176,7 +185,8 @@ public class StockMenuCommunication {
 
 				validate = true;
 			} catch (Exception e) {
-				System.out.println("Opção inválida");
+				throw new InvalidInputException(1L);
+			} finally {
 				continue;
 			}
 		}
@@ -192,7 +202,8 @@ public class StockMenuCommunication {
 				quantity = Integer.parseInt(sc.nextLine());
 				validate = true;
 			} catch (Exception e) {
-				System.out.println("Quantidade inválida");
+				throw new InvalidInputException(1L);
+			} finally {
 				continue;
 			}
 		}
@@ -204,6 +215,7 @@ public class StockMenuCommunication {
 		double buyPrice = 0.0;
 		double sellPrice = 0.0;
 		
+		//como não voltar para o começo?
 		while (!validate) {
 			try {
 				System.out.print("\nDigite o preço de compra: ");
@@ -213,8 +225,7 @@ public class StockMenuCommunication {
 				sellPrice = Double.parseDouble(sc.nextLine());
 				
 				validate = true;
-			} catch (Exception e) {
-				System.out.println("Preços inválidos");
+			} finally {
 				continue;
 			}
 		}
@@ -223,52 +234,74 @@ public class StockMenuCommunication {
 	}
 
 	public static void searchForSku() throws ProductNotFoundException {
-		System.out.println("Informe o SKU do produto: ");
-		String sku = sc.next();
-		System.out.println(productController.findSku(sku));
+		Boolean validator = false;
+		String sku = null;
+		while(!validator) {
+			try {
+				System.out.println("Informe o SKU do produto: ");
+				sku = sc.next();
+				System.out.println(productController.findSku(sku).toString());
+				validator = true;			
+			} catch (Exception e) {
+				throw new ProductNotFoundException();
+			} finally {
+				break;
+			}
+			
+		}
+		
 	}
+	
 
 	public static void listAllStock() {
-		System.out.println( productController.listAll());
+		System.out.println(productController.listAll());
 		
 	}
 
-	public static void updateProductQuantity() {
+	public static void updateProductQuantity() throws InvalidInputException, ProductNotFoundException {
 		boolean validate = false;
 		while (!validate) {
 			System.out.println("\nAtualizar Quantidade do Estoque\n");
+			
 			try {
 				System.out.print("Digite o SKU do produto: ");
-				String sku = sc.nextLine();
-				System.out.print("Digite a quantidade do produto: ");
+				String sku = sc.next();
+				productController.findSku(sku);
+			
+				System.out.print("Digite a quantidade do produto que deseja adicionar: ");
 				Integer quantity = sc.nextInt();
-				validate = true;
+				
 				productController.update(sku, quantity);
-			} catch (Exception e) {
-				System.out.println("Opção inválida");
-				continue;
-			}
-
+				System.out.println("Foram adicionadas " + quantity + " unidades do produto!");
+				validate = true;
+			} catch (ProductNotFoundException e) {
+				
+			} 
+			sc.reset();	
 		}
 
 	}
 
-	public static void updateProductPrice() {
+	public static void updateProductPrice() throws ProductNotFoundException, InvalidSellValueException {
 		boolean validate = false;
 		while (!validate) {
 			System.out.println("\nAtualizar Preço do Estoque\n");
 			try {
 				System.out.print("Digite o SKU do produto: ");
-				String sku = sc.nextLine();
+				String sku = sc.next();
 				System.out.print("Digite o preço de compra do produto: ");
 				Double purchasePrice = sc.nextDouble();
 				System.out.print("Digite o preço de venda do produto: ");
 				Double salePrice = sc.nextDouble();
-				validate = true;
+				
 				productController.update(sku, purchasePrice, salePrice);
-			} catch (Exception e) {
-				System.out.println("Opção inválida");
-				continue;
+				System.out.println("\nO preço de venda foi atualizado para " + String.format("R$%.2f", salePrice));
+				validate = true;
+			} catch (ProductNotFoundException e) {
+				
+				
+			} catch (InvalidSellValueException e) {
+				
 			}
 
 		}

@@ -33,8 +33,8 @@ public class ProductController {
 		return stock.createProductStock(product, quantity);
 	}
 
-	public String findSku(String sku) throws ProductNotFoundException {
-		return stock.verifyIfExists(sku).toString();
+	public Product findSku(String sku) throws ProductNotFoundException {
+		return stock.verifyIfExists(sku);
 	}
 
 	public String listAll() {
@@ -68,9 +68,6 @@ public class ProductController {
 	public String update(String sku, Double buyPrice, Double sellPrice)
 			throws ProductNotFoundException, InvalidSellValueException {
 		Product product = stock.verifyIfExists(sku);
-		if (product == null) {
-			return " Produto não encontrado!";
-		} else {
 		product.setBuyPrice(buyPrice);
 		product.setSellPrice(sellPrice);
 		stock.validateProfit(product);
@@ -78,4 +75,4 @@ public class ProductController {
 		}
 	}
 
-}
+

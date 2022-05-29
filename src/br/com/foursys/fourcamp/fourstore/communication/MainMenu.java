@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import br.com.foursys.fourcamp.fourstore.controller.ProductController;
 import br.com.foursys.fourcamp.fourstore.enums.MenuEnum;
+import br.com.foursys.fourcamp.fourstore.exception.InvalidInputException;
 import br.com.foursys.fourcamp.fourstore.exception.InvalidSellValueException;
 import br.com.foursys.fourcamp.fourstore.exception.ProductNotFoundException;
 import br.com.foursys.fourcamp.fourstore.exception.StockInsufficientException;
@@ -13,13 +14,8 @@ public class MainMenu {
 
 	static Scanner sc = new Scanner(System.in);
 
-	public static void main(String[] args) throws InvalidSellValueException, ProductNotFoundException, StockInsufficientException {
-		new MainMenu();
-
-	}
-
-	public MainMenu() throws InvalidSellValueException, ProductNotFoundException, StockInsufficientException {
-		{
+	public MainMenu() throws InvalidSellValueException, ProductNotFoundException, StockInsufficientException { menu();}
+	/*	{
 			String mockUser = "Admin";
 			String mockPassword = "********";
 
@@ -33,13 +29,13 @@ public class MainMenu {
 
 				if ((!user.equals(mockUser) || (!password.equals(mockPassword)))) {
 					System.out.println("Acesso negado!!!");
-				} else {
+				} else { 
 					menu();
 					break;
 				}
 			}
 		}
-	}
+	}*/
 
 	public void menu() throws InvalidSellValueException, ProductNotFoundException, StockInsufficientException {
 		boolean validator = true;
@@ -74,7 +70,7 @@ public class MainMenu {
 	}
 
 	private boolean stockMenu(boolean initialStock) throws InvalidSellValueException, ProductNotFoundException {
-		Integer option;
+		Integer option = null;
 		boolean validate = false;
 		
 		while (!validate) {
@@ -103,6 +99,7 @@ public class MainMenu {
 					case 6 -> {
 						if(!initialStock) {
 							initialStock();
+							System.out.println("\nEstoque inicial criado!");
 							return true;
 						}
 					}
@@ -111,11 +108,13 @@ public class MainMenu {
 						System.exit(0);
 						break;
 					}
-					case default -> System.out.println("Opção inválida!");		
+					case default -> throw new InvalidInputException(option);		
 				}
 				validate = true;
-			} catch (Exception e) {
-				validate = false;
+			} catch (NumberFormatException e) {
+				throw new InvalidInputException(option);
+			} finally {
+				continue;
 			}
 
 		}
@@ -123,7 +122,7 @@ public class MainMenu {
 	}
 
 	private void transactionMenu() throws ProductNotFoundException, StockInsufficientException {
-		Integer option;
+		Integer option = null;
 		boolean validate = false;
 
 		while (!validate) {
@@ -148,11 +147,13 @@ public class MainMenu {
 						System.out.println("### ENCERRANDO SISTEMA... ATÉ A PROXIMA ###");
 						System.exit(0);
 					}
-					case default -> System.out.println("Opção inválida!");					
+					case default -> throw new InvalidInputException(option);					
 					}
 
 				validate = true;
-			} catch (Exception e) {
+			} catch (NumberFormatException e) {
+				throw new InvalidInputException(option);
+			} finally {
 				continue;
 			}
 		}
@@ -160,7 +161,7 @@ public class MainMenu {
 	}
 	
 	private void stockMenuUpdate() throws InvalidSellValueException, ProductNotFoundException {
-		Integer option;
+		Integer option = null;
 		boolean validate = false;
 
 		while (!validate) {
@@ -178,17 +179,21 @@ public class MainMenu {
 
 			try {
 				option = Integer.parseInt(sc.nextLine());
+				
 				switch (option) {
 					case 1 -> StockMenuCommunication.updateProductQuantity();					
 					case 2 -> StockMenuCommunication.updateProductPrice();						
 					case 3 -> StockMenuCommunication.deleteProduct();
 					case 4 -> stockMenu(validate);
 					case 5 -> System.exit(0);
-					case default -> System.out.println("Opção inválida!");					
+					case default -> throw new InvalidInputException(option);	
+					
 				}
 
 				validate = true;
-			} catch (Exception e) {
+			} catch (NumberFormatException e) {
+				throw new InvalidInputException(option);
+			}  finally {
 				continue;
 			}
 

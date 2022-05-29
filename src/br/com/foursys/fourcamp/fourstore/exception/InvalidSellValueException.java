@@ -5,7 +5,7 @@ public class InvalidSellValueException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	public InvalidSellValueException() {
-        super("Lucro menor que 25%. Operação inválida!");
+        System.err.println("Lucro menor que 25%. Operação inválida!");
 	
 }
 }
